@@ -1,0 +1,4612 @@
+[
+ {
+  "name": "list_accounts",
+  "inputSchema": {
+   "properties": {},
+   "title": "list_accountsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Accounts",
+   "readOnlyHint": true
+  }
+ },
+ {
+  "name": "list_contacts",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "title": "list_contactsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Contacts",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "search_contacts",
+  "inputSchema": {
+   "properties": {
+    "query": {
+     "title": "Query",
+     "type": "string"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "query"
+   ],
+   "title": "search_contactsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Search Contacts",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_contact_ids",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "title": "get_contact_idsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Contact Ids",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_direct_chat_by_contact",
+  "inputSchema": {
+   "properties": {
+    "contact_query": {
+     "title": "Contact Query",
+     "type": "string"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "contact_query"
+   ],
+   "title": "get_direct_chat_by_contactArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Direct Chat By Contact",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_contact_chats",
+  "inputSchema": {
+   "properties": {
+    "contact_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Contact Id"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "contact_id"
+   ],
+   "title": "get_contact_chatsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Contact Chats",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_last_interaction",
+  "inputSchema": {
+   "properties": {
+    "contact_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Contact Id"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "contact_id"
+   ],
+   "title": "get_last_interactionArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Last Interaction",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "add_contact",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    },
+    "phone": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Phone"
+    },
+    "first_name": {
+     "default": "",
+     "title": "First Name",
+     "type": "string"
+    },
+    "last_name": {
+     "default": "",
+     "title": "Last Name",
+     "type": "string"
+    },
+    "username": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Username"
+    }
+   },
+   "title": "add_contactArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Add Contact",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_contact",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "delete_contactArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Contact",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "block_user",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "block_userArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Block User",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unblock_user",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "unblock_userArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unblock User",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "import_contacts",
+  "inputSchema": {
+   "properties": {
+    "contacts": {
+     "items": {},
+     "title": "Contacts",
+     "type": "array"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "contacts"
+   ],
+   "title": "import_contactsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Import Contacts",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "export_contacts",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "title": "export_contactsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Export Contacts",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_blocked_users",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "title": "get_blocked_usersArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Blocked Users",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_contact",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "phone_number": {
+     "title": "Phone Number",
+     "type": "string"
+    },
+    "first_name": {
+     "title": "First Name",
+     "type": "string"
+    },
+    "last_name": {
+     "default": "",
+     "title": "Last Name",
+     "type": "string"
+    },
+    "vcard": {
+     "default": "",
+     "title": "Vcard",
+     "type": "string"
+    },
+    "account": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Account"
+    }
+   },
+   "required": [
+    "chat_id",
+    "phone_number",
+    "first_name"
+   ],
+   "title": "send_contactArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Contact",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_chats",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    },
+    "page": {
+     "default": 1,
+     "title": "Page",
+     "type": "integer"
+    },
+    "page_size": {
+     "default": 20,
+     "title": "Page Size",
+     "type": "integer"
+    }
+   },
+   "title": "get_chatsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Chats",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "subscribe_public_channel",
+  "inputSchema": {
+   "properties": {
+    "channel": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Channel"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "channel"
+   ],
+   "title": "subscribe_public_channelArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Subscribe Public Channel",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "list_topics",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "title": "Chat Id",
+     "type": "integer"
+    },
+    "limit": {
+     "default": 200,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "offset_topic": {
+     "default": 0,
+     "title": "Offset Topic",
+     "type": "integer"
+    },
+    "search_query": {
+     "default": null,
+     "title": "Search Query",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "list_topicsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Topics",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "enable_forum_topics",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "tabs": {
+     "default": true,
+     "title": "Tabs",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "enable_forum_topicsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Enable Forum Topics",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "create_forum_topic",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "icon_color": {
+     "default": null,
+     "title": "Icon Color",
+     "type": "integer"
+    },
+    "icon_emoji_id": {
+     "default": null,
+     "title": "Icon Emoji Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "title"
+   ],
+   "title": "create_forum_topicArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Create Forum Topic",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "list_chats",
+  "inputSchema": {
+   "properties": {
+    "chat_type": {
+     "default": null,
+     "title": "Chat Type",
+     "type": "string"
+    },
+    "limit": {
+     "default": 20,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "unread_only": {
+     "default": false,
+     "title": "Unread Only",
+     "type": "boolean"
+    },
+    "unmuted_only": {
+     "default": false,
+     "title": "Unmuted Only",
+     "type": "boolean"
+    },
+    "archived": {
+     "default": null,
+     "title": "Archived",
+     "type": "boolean"
+    },
+    "with_about": {
+     "default": false,
+     "title": "With About",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "list_chatsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Chats",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Chat",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "search_public_chats",
+  "inputSchema": {
+   "properties": {
+    "query": {
+     "title": "Query",
+     "type": "string"
+    },
+    "limit": {
+     "default": 20,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "query"
+   ],
+   "title": "search_public_chatsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Search Public Chats",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "resolve_username",
+  "inputSchema": {
+   "properties": {
+    "username": {
+     "title": "Username",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "username"
+   ],
+   "title": "resolve_usernameArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Resolve Username",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_full_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_full_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Full Chat",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "mute_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "mute_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Mute Chat",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unmute_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "unmute_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unmute Chat",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "archive_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "archive_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Archive Chat",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unarchive_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "unarchive_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unarchive Chat",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_common_chats",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "limit": {
+     "default": 100,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "max_id": {
+     "default": 0,
+     "title": "Max Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "get_common_chatsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Common Chats",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_message_read_by",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "get_message_read_byArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Message Read By",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_message_link",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "thread": {
+     "default": false,
+     "title": "Thread",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "get_message_linkArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Message Link",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "page": {
+     "default": 1,
+     "title": "Page",
+     "type": "integer"
+    },
+    "page_size": {
+     "default": 20,
+     "title": "Page Size",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message": {
+     "title": "Message",
+     "type": "string"
+    },
+    "parse_mode": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Parse Mode"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message"
+   ],
+   "title": "send_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Message",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_scheduled_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message": {
+     "title": "Message",
+     "type": "string"
+    },
+    "schedule_date": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "integer"
+      }
+     ],
+     "title": "Schedule Date"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message",
+    "schedule_date"
+   ],
+   "title": "send_scheduled_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Scheduled Message",
+   "destructiveHint": true,
+   "idempotentHint": false,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_scheduled_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_scheduled_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Scheduled Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_scheduled_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_ids": {
+     "items": {
+      "type": "integer"
+     },
+     "title": "Message Ids",
+     "type": "array"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_ids"
+   ],
+   "title": "delete_scheduled_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Scheduled Message",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "list_inline_buttons",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Message Id"
+    },
+    "limit": {
+     "default": 20,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "list_inline_buttonsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Inline Buttons",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "press_inline_button",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Message Id"
+    },
+    "button_text": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Button Text"
+    },
+    "button_index": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Button Index"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "press_inline_buttonArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Press Inline Button",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "list_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "limit": {
+     "default": 20,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "search_query": {
+     "default": null,
+     "title": "Search Query",
+     "type": "string"
+    },
+    "from_date": {
+     "default": null,
+     "title": "From Date",
+     "type": "string"
+    },
+    "to_date": {
+     "default": null,
+     "title": "To Date",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "list_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_message_context",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "context_size": {
+     "default": 3,
+     "title": "Context Size",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "get_message_contextArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Message Context",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "forward_message",
+  "inputSchema": {
+   "properties": {
+    "from_chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "From Chat Id"
+    },
+    "message_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "items": {
+        "type": "integer"
+       },
+       "type": "array"
+      }
+     ],
+     "title": "Message Id"
+    },
+    "to_chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "To Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    },
+    "expand_album": {
+     "default": true,
+     "title": "Expand Album",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "from_chat_id",
+    "message_id",
+    "to_chat_id"
+   ],
+   "title": "forward_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Forward Message",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "forward_messages",
+  "inputSchema": {
+   "properties": {
+    "from_chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "From Chat Id"
+    },
+    "message_ids": {
+     "items": {
+      "type": "integer"
+     },
+     "title": "Message Ids",
+     "type": "array"
+    },
+    "to_chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "To Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "from_chat_id",
+    "message_ids",
+    "to_chat_id"
+   ],
+   "title": "forward_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Forward Messages (batch)",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "edit_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "new_text": {
+     "title": "New Text",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id",
+    "new_text"
+   ],
+   "title": "edit_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Edit Message",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "delete_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Message",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_chat_history",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "max_id": {
+     "default": 0,
+     "title": "Max Id",
+     "type": "integer"
+    },
+    "revoke": {
+     "default": false,
+     "title": "Revoke",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "delete_chat_historyArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Chat History",
+   "destructiveHint": true,
+   "idempotentHint": false,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_messages_bulk",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_ids": {
+     "items": {
+      "type": "integer"
+     },
+     "title": "Message Ids",
+     "type": "array"
+    },
+    "revoke": {
+     "default": true,
+     "title": "Revoke",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_ids"
+   ],
+   "title": "delete_messages_bulkArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Messages Bulk",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "pin_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "pin_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Pin Message",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unpin_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "unpin_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unpin Message",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unpin_all_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "unpin_all_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unpin All Messages",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "mark_as_read",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "mark_as_readArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Mark As Read",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "reply_to_message",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "text": {
+     "title": "Text",
+     "type": "string"
+    },
+    "parse_mode": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Parse Mode"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id",
+    "text"
+   ],
+   "title": "reply_to_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Reply To Message",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "search_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "query": {
+     "title": "Query",
+     "type": "string"
+    },
+    "limit": {
+     "default": 20,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "query"
+   ],
+   "title": "search_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Search Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "search_global",
+  "inputSchema": {
+   "properties": {
+    "query": {
+     "title": "Query",
+     "type": "string"
+    },
+    "page": {
+     "default": 1,
+     "title": "Page",
+     "type": "integer"
+    },
+    "page_size": {
+     "default": 20,
+     "title": "Page Size",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "query"
+   ],
+   "title": "search_globalArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Search Global Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_history",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "limit": {
+     "default": 100,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_historyArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get History",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_pinned_messages",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_pinned_messagesArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Pinned Messages",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "create_poll",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "title": "Chat Id",
+     "type": "integer"
+    },
+    "question": {
+     "title": "Question",
+     "type": "string"
+    },
+    "options": {
+     "items": {},
+     "title": "Options",
+     "type": "array"
+    },
+    "multiple_choice": {
+     "default": false,
+     "title": "Multiple Choice",
+     "type": "boolean"
+    },
+    "quiz_mode": {
+     "default": false,
+     "title": "Quiz Mode",
+     "type": "boolean"
+    },
+    "public_votes": {
+     "default": true,
+     "title": "Public Votes",
+     "type": "boolean"
+    },
+    "close_date": {
+     "default": null,
+     "title": "Close Date",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "question",
+    "options"
+   ],
+   "title": "create_pollArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Create Poll",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_reaction",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "emoji": {
+     "title": "Emoji",
+     "type": "string"
+    },
+    "big": {
+     "default": false,
+     "title": "Big",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id",
+    "emoji"
+   ],
+   "title": "send_reactionArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Reaction",
+   "destructiveHint": false,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "remove_reaction",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "remove_reactionArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Remove Reaction",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_message_reactions",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "limit": {
+     "default": 50,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "get_message_reactionsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Message Reactions",
+   "readOnlyHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "save_draft",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message": {
+     "title": "Message",
+     "type": "string"
+    },
+    "reply_to_msg_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Reply To Msg Id"
+    },
+    "no_webpage": {
+     "default": false,
+     "title": "No Webpage",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message"
+   ],
+   "title": "save_draftArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Save Draft",
+   "destructiveHint": false,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_drafts",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "get_draftsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Drafts",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "clear_draft",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "clear_draftArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Clear Draft",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "create_group",
+  "inputSchema": {
+   "properties": {
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "user_ids": {
+     "items": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       }
+      ]
+     },
+     "title": "User Ids",
+     "type": "array"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "title",
+    "user_ids"
+   ],
+   "title": "create_groupArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Create Group",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "invite_to_group",
+  "inputSchema": {
+   "properties": {
+    "group_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Group Id"
+    },
+    "user_ids": {
+     "items": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       }
+      ]
+     },
+     "title": "User Ids",
+     "type": "array"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "group_id",
+    "user_ids"
+   ],
+   "title": "invite_to_groupArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Invite To Group",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "leave_chat",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "leave_chatArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Leave Chat",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_participants",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "page": {
+     "default": 1,
+     "title": "Page",
+     "type": "integer"
+    },
+    "page_size": {
+     "default": 200,
+     "title": "Page Size",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_participantsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Participants",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "create_channel",
+  "inputSchema": {
+   "properties": {
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "about": {
+     "default": "",
+     "title": "About",
+     "type": "string"
+    },
+    "megagroup": {
+     "default": false,
+     "title": "Megagroup",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "title"
+   ],
+   "title": "create_channelArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Create Channel",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "edit_chat_title",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "title"
+   ],
+   "title": "edit_chat_titleArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Edit Chat Title",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "edit_chat_photo",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "file_path": {
+     "title": "File Path",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "file_path"
+   ],
+   "title": "edit_chat_photoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Edit Chat Photo",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "edit_chat_about",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "about": {
+     "title": "About",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "about"
+   ],
+   "title": "edit_chat_aboutArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Edit Chat About",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_chat_photo",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "delete_chat_photoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Chat Photo",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "promote_admin",
+  "inputSchema": {
+   "properties": {
+    "group_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Group Id"
+    },
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "rights": {
+     "additionalProperties": true,
+     "default": null,
+     "title": "Rights",
+     "type": "object"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "group_id",
+    "user_id"
+   ],
+   "title": "promote_adminArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Promote Admin",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "demote_admin",
+  "inputSchema": {
+   "properties": {
+    "group_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Group Id"
+    },
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "group_id",
+    "user_id"
+   ],
+   "title": "demote_adminArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Demote Admin",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "ban_user",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "user_id"
+   ],
+   "title": "ban_userArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Ban User",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "unban_user",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "user_id"
+   ],
+   "title": "unban_userArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Unban User",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "set_default_chat_permissions",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "send_messages": {
+     "default": true,
+     "title": "Send Messages",
+     "type": "boolean"
+    },
+    "send_media": {
+     "default": true,
+     "title": "Send Media",
+     "type": "boolean"
+    },
+    "send_stickers": {
+     "default": true,
+     "title": "Send Stickers",
+     "type": "boolean"
+    },
+    "send_gifs": {
+     "default": true,
+     "title": "Send Gifs",
+     "type": "boolean"
+    },
+    "send_games": {
+     "default": true,
+     "title": "Send Games",
+     "type": "boolean"
+    },
+    "send_inline": {
+     "default": true,
+     "title": "Send Inline",
+     "type": "boolean"
+    },
+    "embed_links": {
+     "default": true,
+     "title": "Embed Links",
+     "type": "boolean"
+    },
+    "send_polls": {
+     "default": true,
+     "title": "Send Polls",
+     "type": "boolean"
+    },
+    "change_info": {
+     "default": false,
+     "title": "Change Info",
+     "type": "boolean"
+    },
+    "invite_users": {
+     "default": true,
+     "title": "Invite Users",
+     "type": "boolean"
+    },
+    "pin_messages": {
+     "default": false,
+     "title": "Pin Messages",
+     "type": "boolean"
+    },
+    "until_date": {
+     "default": 0,
+     "title": "Until Date",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "set_default_chat_permissionsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Set Default Chat Permissions",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "toggle_slow_mode",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "seconds": {
+     "default": 0,
+     "title": "Seconds",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "toggle_slow_modeArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Toggle Slow Mode",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "edit_admin_rights",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "rank": {
+     "default": "",
+     "title": "Rank",
+     "type": "string"
+    },
+    "change_info": {
+     "default": false,
+     "title": "Change Info",
+     "type": "boolean"
+    },
+    "post_messages": {
+     "default": false,
+     "title": "Post Messages",
+     "type": "boolean"
+    },
+    "edit_messages": {
+     "default": false,
+     "title": "Edit Messages",
+     "type": "boolean"
+    },
+    "delete_messages": {
+     "default": false,
+     "title": "Delete Messages",
+     "type": "boolean"
+    },
+    "ban_users": {
+     "default": false,
+     "title": "Ban Users",
+     "type": "boolean"
+    },
+    "invite_users": {
+     "default": false,
+     "title": "Invite Users",
+     "type": "boolean"
+    },
+    "pin_messages": {
+     "default": false,
+     "title": "Pin Messages",
+     "type": "boolean"
+    },
+    "add_admins": {
+     "default": false,
+     "title": "Add Admins",
+     "type": "boolean"
+    },
+    "anonymous": {
+     "default": false,
+     "title": "Anonymous",
+     "type": "boolean"
+    },
+    "manage_call": {
+     "default": false,
+     "title": "Manage Call",
+     "type": "boolean"
+    },
+    "manage_topics": {
+     "default": false,
+     "title": "Manage Topics",
+     "type": "boolean"
+    },
+    "other": {
+     "default": false,
+     "title": "Other",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "user_id"
+   ],
+   "title": "edit_admin_rightsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Edit Admin Rights",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_admins",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_adminsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Admins",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_banned_users",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_banned_usersArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Banned Users",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_invite_link",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_invite_linkArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Invite Link",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "join_chat_by_link",
+  "inputSchema": {
+   "properties": {
+    "link": {
+     "title": "Link",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "link"
+   ],
+   "title": "join_chat_by_linkArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Join Chat By Link",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "export_chat_invite",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "export_chat_inviteArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Export Chat Invite",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "import_chat_invite",
+  "inputSchema": {
+   "properties": {
+    "hash": {
+     "title": "Hash",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "hash"
+   ],
+   "title": "import_chat_inviteArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Import Chat Invite",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_recent_actions",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id"
+   ],
+   "title": "get_recent_actionsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Recent Actions",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_file",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "file_path": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      }
+     ],
+     "title": "File Path"
+    },
+    "caption": {
+     "default": null,
+     "title": "Caption",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "file_path"
+   ],
+   "title": "send_fileArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send File",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_album",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "file_paths": {
+     "items": {
+      "type": "string"
+     },
+     "title": "File Paths",
+     "type": "array"
+    },
+    "caption": {
+     "default": null,
+     "title": "Caption",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "file_paths"
+   ],
+   "title": "send_albumArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Album",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "download_media",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "file_path": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "File Path"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "download_mediaArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Download Media",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_voice",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "file_path": {
+     "title": "File Path",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "file_path"
+   ],
+   "title": "send_voiceArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Voice",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "upload_file",
+  "inputSchema": {
+   "properties": {
+    "file_path": {
+     "title": "File Path",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "file_path"
+   ],
+   "title": "upload_fileArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Upload File",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_media_info",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "message_id": {
+     "title": "Message Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "message_id"
+   ],
+   "title": "get_media_infoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Media Info",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_sticker_sets",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "get_sticker_setsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Sticker Sets",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_sticker",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "file_path": {
+     "title": "File Path",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "file_path"
+   ],
+   "title": "send_stickerArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Sticker",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_gif_search",
+  "inputSchema": {
+   "properties": {
+    "query": {
+     "title": "Query",
+     "type": "string"
+    },
+    "limit": {
+     "default": 10,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "query"
+   ],
+   "title": "get_gif_searchArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Gif Search",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "send_gif",
+  "inputSchema": {
+   "properties": {
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "gif_id": {
+     "title": "Gif Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "chat_id",
+    "gif_id"
+   ],
+   "title": "send_gifArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Send Gif",
+   "destructiveHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_me",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "get_meArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Me",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "update_profile",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    },
+    "first_name": {
+     "default": null,
+     "title": "First Name",
+     "type": "string"
+    },
+    "last_name": {
+     "default": null,
+     "title": "Last Name",
+     "type": "string"
+    },
+    "about": {
+     "default": null,
+     "title": "About",
+     "type": "string"
+    }
+   },
+   "title": "update_profileArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Update Profile",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "set_profile_photo",
+  "inputSchema": {
+   "properties": {
+    "file_path": {
+     "title": "File Path",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "file_path"
+   ],
+   "title": "set_profile_photoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Set Profile Photo",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_profile_photo",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "delete_profile_photoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Profile Photo",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_privacy_settings",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "get_privacy_settingsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Privacy Settings",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "set_privacy_settings",
+  "inputSchema": {
+   "properties": {
+    "key": {
+     "title": "Key",
+     "type": "string"
+    },
+    "allow_users": {
+     "anyOf": [
+      {
+       "items": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "string"
+         }
+        ]
+       },
+       "type": "array"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Allow Users"
+    },
+    "disallow_users": {
+     "anyOf": [
+      {
+       "items": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "string"
+         }
+        ]
+       },
+       "type": "array"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Disallow Users"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "key"
+   ],
+   "title": "set_privacy_settingsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Set Privacy Settings",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_full_user",
+  "inputSchema": {
+   "properties": {
+    "username": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Username"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "username"
+   ],
+   "title": "get_full_userArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Full User",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_bot_info",
+  "inputSchema": {
+   "properties": {
+    "bot_username": {
+     "title": "Bot Username",
+     "type": "string"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "bot_username"
+   ],
+   "title": "get_bot_infoArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Bot Info",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "set_bot_commands",
+  "inputSchema": {
+   "properties": {
+    "bot_username": {
+     "title": "Bot Username",
+     "type": "string"
+    },
+    "commands": {
+     "items": {},
+     "title": "Commands",
+     "type": "array"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "bot_username",
+    "commands"
+   ],
+   "title": "set_bot_commandsArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Set Bot Commands",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_user_photos",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "limit": {
+     "default": 10,
+     "title": "Limit",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "get_user_photosArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get User Photos",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_user_status",
+  "inputSchema": {
+   "properties": {
+    "user_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "User Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "user_id"
+   ],
+   "title": "get_user_statusArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get User Status",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "list_folders",
+  "inputSchema": {
+   "properties": {
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "title": "list_foldersArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "List Folders",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "get_folder",
+  "inputSchema": {
+   "properties": {
+    "folder_id": {
+     "title": "Folder Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "folder_id"
+   ],
+   "title": "get_folderArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Get Folder",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "create_folder",
+  "inputSchema": {
+   "properties": {
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "emoticon": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Emoticon"
+    },
+    "chat_ids": {
+     "anyOf": [
+      {
+       "items": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "string"
+         }
+        ]
+       },
+       "type": "array"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Chat Ids"
+    },
+    "contacts": {
+     "default": false,
+     "title": "Contacts",
+     "type": "boolean"
+    },
+    "non_contacts": {
+     "default": false,
+     "title": "Non Contacts",
+     "type": "boolean"
+    },
+    "groups": {
+     "default": false,
+     "title": "Groups",
+     "type": "boolean"
+    },
+    "broadcasts": {
+     "default": false,
+     "title": "Broadcasts",
+     "type": "boolean"
+    },
+    "bots": {
+     "default": false,
+     "title": "Bots",
+     "type": "boolean"
+    },
+    "exclude_muted": {
+     "default": false,
+     "title": "Exclude Muted",
+     "type": "boolean"
+    },
+    "exclude_read": {
+     "default": false,
+     "title": "Exclude Read",
+     "type": "boolean"
+    },
+    "exclude_archived": {
+     "default": true,
+     "title": "Exclude Archived",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "title"
+   ],
+   "title": "create_folderArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Create Folder",
+   "destructiveHint": true,
+   "idempotentHint": false,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "add_chat_to_folder",
+  "inputSchema": {
+   "properties": {
+    "folder_id": {
+     "title": "Folder Id",
+     "type": "integer"
+    },
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "pinned": {
+     "default": false,
+     "title": "Pinned",
+     "type": "boolean"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "folder_id",
+    "chat_id"
+   ],
+   "title": "add_chat_to_folderArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Add Chat to Folder",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "remove_chat_from_folder",
+  "inputSchema": {
+   "properties": {
+    "folder_id": {
+     "title": "Folder Id",
+     "type": "integer"
+    },
+    "chat_id": {
+     "anyOf": [
+      {
+       "type": "integer"
+      },
+      {
+       "type": "string"
+      }
+     ],
+     "title": "Chat Id"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "folder_id",
+    "chat_id"
+   ],
+   "title": "remove_chat_from_folderArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Remove Chat from Folder",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "delete_folder",
+  "inputSchema": {
+   "properties": {
+    "folder_id": {
+     "title": "Folder Id",
+     "type": "integer"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "folder_id"
+   ],
+   "title": "delete_folderArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Delete Folder",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "reorder_folders",
+  "inputSchema": {
+   "properties": {
+    "folder_ids": {
+     "items": {
+      "type": "integer"
+     },
+     "title": "Folder Ids",
+     "type": "array"
+    },
+    "account": {
+     "default": null,
+     "title": "Account",
+     "type": "string"
+    }
+   },
+   "required": [
+    "folder_ids"
+   ],
+   "title": "reorder_foldersArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Reorder Folders",
+   "destructiveHint": true,
+   "idempotentHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "wait_for_new_message",
+  "inputSchema": {
+   "properties": {
+    "timeout": {
+     "default": 50.0,
+     "title": "Timeout",
+     "type": "number"
+    }
+   },
+   "title": "wait_for_new_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Wait For New Message",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ },
+ {
+  "name": "wait_for_settled_message",
+  "inputSchema": {
+   "properties": {
+    "settle_ms": {
+     "default": 6000,
+     "title": "Settle Ms",
+     "type": "integer"
+    },
+    "max_wait_ms": {
+     "default": 50000,
+     "title": "Max Wait Ms",
+     "type": "integer"
+    }
+   },
+   "title": "wait_for_settled_messageArguments",
+   "type": "object"
+  },
+  "annotations": {
+   "title": "Wait For Settled Message",
+   "readOnlyHint": true,
+   "openWorldHint": true
+  }
+ }
+]

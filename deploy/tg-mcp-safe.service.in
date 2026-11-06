@@ -1,0 +1,52 @@
+[Unit]
+Description=tg-mcp-safe: Telegram MCP со стражами кредов (для Claude Code и шлюза claude.ai)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=tgmcp
+Group=tgmcp
+# Сессия и API_HASH зашифрованы systemd-creds (ключ хоста или TPM); открытый текст есть
+# только в памяти: systemd расшифровывает его в $CREDENTIALS_DIRECTORY (ramfs, только для процесса).
+LoadCredentialEncrypted=telegram.env:/etc/tg-mcp-safe/telegram.env.cred
+Environment=MCP_TRANSPORT=http MCP_HOST=127.0.0.1 MCP_PORT=8767
+Environment=TG_MCP_DOWNLOAD_DIR=@DOWNLOAD_DIR@
+# Аргументы — папки, из которых разрешено отправлять файлы.
+ExecStart=/opt/tg-mcp-safe/venv/bin/tg-mcp-safe @ROOTS@
+Restart=on-failure
+RestartSec=30
+UMask=0027
+
+# Домашние папки пустые, видны только разрешённые папки (на тех же путях).
+ProtectHome=tmpfs
+BindReadOnlyPaths=@ROOTS@
+BindPaths=@DOWNLOAD_DIR@
+ProtectSystem=strict
+PrivateTmp=true
+PrivateDevices=true
+ProtectProc=invisible
+ProcSubset=pid
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+LimitCORE=0
+
+[Install]
+WantedBy=multi-user.target

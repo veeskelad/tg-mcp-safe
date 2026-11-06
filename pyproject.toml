@@ -1,0 +1,22 @@
+[project]
+name = "tg-mcp-safe"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "telethon==1.44.0",
+  "mcp==1.22.0",
+  "python-socks[asyncio]==2.7.1",
+]
+
+[project.scripts]
+tg-mcp-safe = "tg_mcp_safe.runner:main"
+
+[dependency-groups]
+dev = ["pytest==8.4.2", "pytest-asyncio==1.2.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

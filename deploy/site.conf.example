@@ -1,0 +1,9 @@
+# Copy to deploy/site.conf and adjust. Read by deploy/install.sh (bash syntax).
+# Folders the server may send files FROM (read-only inside the sandbox).
+ROOTS=(/home/alice/Media /home/alice/Shared/outgoing)
+# Where download_media writes files; must not be inside a read-only root's hidden path.
+DOWNLOAD_DIR=/home/alice/Media/telegram-downloads
+# Group that can read downloaded files (usually your user's group).
+DOWNLOAD_GROUP=alice
+# Path to uv.
+UV=/usr/local/bin/uv
