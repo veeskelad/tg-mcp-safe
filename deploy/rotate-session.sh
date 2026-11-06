@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Новая сессия Telegram для tg-mcp-safe. Запускать в терминале: sudo deploy/rotate-session.sh
-# Спросит телефон, код из Telegram и пароль 2FA. Новая строка сессии не печатается и не пишется
+# Новая сессия Telegram для tg-mcp-safe. Запускать в терминале: sudo deploy/rotate-session.sh [--qr [--light]]
+# Без флага спросит телефон, код из Telegram и пароль 2FA; с --qr покажет QR-код для приложения. Новая строка сессии не печатается и не пишется
 # на диск открытым текстом: из памяти Python сразу в systemd-creds encrypt.
 # После проверки — завершить старую сессию: Telegram → Настройки → Устройства.
 set -euo pipefail
@@ -14,7 +14,7 @@ WAIT=${TG_WAIT:-15}
 NEW=$(mktemp "$(dirname "$CRED")/.new.XXXXXX"); trap 'rm -f "$NEW"' EXIT
 # fd 3 программы → encrypt; её stdout → stderr (терминал).
 systemd-creds decrypt --name=telegram.env "$CRED" - \
-  | "$PY" -I "$PROG" 3>&1 1>&2 \
+  | "$PY" -I "$PROG" "$@" 3>&1 1>&2 \
   | systemd-creds encrypt --name=telegram.env - "$NEW"
 systemd-creds decrypt --name=telegram.env "$NEW" - | grep -q '^TELEGRAM_SESSION_STRING=.' \
   || { echo "новая сессия не записана, ничего не меняю"; exit 1; }

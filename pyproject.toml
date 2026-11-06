@@ -6,6 +6,7 @@ dependencies = [
   "telethon==1.44.0",
   "mcp==1.22.0",
   "python-socks[asyncio]==2.7.1",
+  "qrcode==8.2",
 ]
 
 [project.scripts]

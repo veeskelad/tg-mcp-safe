@@ -43,3 +43,58 @@ def test_login_asks_and_returns():
     answers = iter(["+70000000000", "12345"])
     s, me = asyncio.run(ns.login(1, "h", lambda p: next(answers), lambda p: "pw", client_factory=lambda: fc))
     assert (s, me) == ("NEWSESSION", 42) and fc.asked == ["+70000000000", "12345", "pw"]
+
+
+class FakeQR:
+    def __init__(self, script):
+        self.script = list(script)
+        self.url = "tg://login?token=fake"
+        self.recreated = 0
+
+    async def wait(self):
+        step = self.script.pop(0)
+        if step is not None:
+            raise step
+
+    async def recreate(self):
+        self.recreated += 1
+
+
+class FakeQRClient(FakeClient):
+    def __init__(self, script):
+        super().__init__()
+        self.qr = FakeQR(script)
+        self.password = None
+        self.connected = False
+
+    async def connect(self):
+        self.connected = True
+
+    async def qr_login(self):
+        return self.qr
+
+    async def sign_in(self, password=None):
+        self.password = password
+
+
+def test_qr_timeout_then_scan():
+    fc = FakeQRClient([asyncio.TimeoutError(), None])
+    shown = []
+    s, me = asyncio.run(ns.login_qr(1, "h", shown.append, lambda p: "pw", client_factory=lambda: fc))
+    assert (s, me) == ("NEWSESSION", 42)
+    assert fc.qr.recreated == 1 and len(shown) == 2 and fc.password is None
+    assert "█" in shown[0] or "▀" in shown[0] or "▄" in shown[0]
+
+
+def test_qr_with_2fa():
+    from telethon.errors import SessionPasswordNeededError
+    fc = FakeQRClient([SessionPasswordNeededError(request=None)])
+    s, _ = asyncio.run(ns.login_qr(1, "h", lambda t: None, lambda p: "pw2", client_factory=lambda: fc))
+    assert s == "NEWSESSION" and fc.password == "pw2"
+
+
+def test_qr_not_scanned():
+    import pytest
+    fc = FakeQRClient([asyncio.TimeoutError()] * 3)
+    with pytest.raises(SystemExit):
+        asyncio.run(ns.login_qr(1, "h", lambda t: None, lambda p: "x", client_factory=lambda: fc, attempts=3))

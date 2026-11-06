@@ -64,7 +64,7 @@ sudo systemctl enable --now tg-mcp-safe
 
 The service runs as a dedicated `tgmcp` user with an empty home and only the allowed folders mounted, listening on `127.0.0.1:8767` (streamable HTTP, stateless). Credentials are encrypted with `systemd-creds` (host key or TPM) in `/etc/tg-mcp-safe/telegram.env.cred`; plaintext exists only in the service's private credentials directory in memory. `--move-credentials` encrypts the file and shreds the original.
 
-New session: `sudo deploy/rotate-session.sh` asks for phone, code and 2FA in the terminal and pipes the new session straight into `systemd-creds encrypt` (never written in plaintext); then terminate the old one in Telegram → Settings → Devices.
+New session: `sudo deploy/rotate-session.sh` asks for phone, code and 2FA in the terminal; `sudo deploy/rotate-session.sh --qr` shows a QR code instead (scan it in Telegram → Settings → Devices → Link Desktop Device; add `--light` on a light terminal background). Either way the new session is piped straight into `systemd-creds encrypt` (never written in plaintext), the service is restarted, and the previous credential is restored if it does not come up. Then terminate the old session in Telegram → Settings → Devices.
 
 Claude Code: `claude mcp add --transport http telegram http://127.0.0.1:8767/mcp`.
 
