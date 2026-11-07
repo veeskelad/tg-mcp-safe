@@ -112,6 +112,58 @@ def _looks_random(tok: str) -> bool:
     return _entropy(t) >= 3.6
 
 
+# Пароль без подписи: подпись на своей строке, пара «почта + пароль», строка из одного «парольного» слова.
+_PW_LABEL_LINE = re.compile(
+    r"(?im)^[ \t]*(?:мой |твой |ваш |новый |временный )?(?:пароль|парол[ьяи]|password|passwd|pass|pwd|пасс|креды|доступы?|"
+    r"логин[ \t]*(?:/|и)[ \t]*пароль|login[ \t]*/[ \t]*pass(?:word)?|credentials?|creds)[ \t]*[:\-—–]?[ \t]*\n[ \t]*(\S+)")
+_EMAIL_PAIR = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+[ \t]*(?:[:/|;,]|[ \t])[ \t]*(\S{6,64})")
+_NOT_PASSWORD = re.compile(
+    r"^(?:[a-z][a-z0-9+.-]*://\S+|www\.\S+|t\.me/\S+|[\w.+-]+@[\w-]+\.\S+|[@#/~.]\S*|\S*[/\\]\S*|"
+    r"[A-Z][A-Z0-9]{1,9}-\d+|v?\d+(?:\.\d+)+\S*|[\d\s.,:;+\-()₽$€%№]+|\S+\.[A-Za-z]{2,4})$")
+
+
+def _password_like(tok: str, standalone_message: bool) -> bool:
+    if not 8 <= len(tok) <= 64 or _NOT_PASSWORD.match(tok):
+        return False
+    core = tok.strip(" *`_~[](){}<>\"'«»“”:;.,!?…")
+    if not core or _NOT_PASSWORD.match(core):
+        return False
+    if not standalone_message:
+        # строка кода или разметки внутри длинного текста: скобки, кавычки, присваивание, имена через точку
+        if re.search(r"[\[\]{}()=<>`'\"|]", core) or re.fullmatch(r"\w+(?:\.\w+)+", core):
+            return False
+    # слово, слова через дефис или идентификатор_с_подчёркиваниями — не пароль
+    if re.fullmatch(r"[^\W\d_]+(?:[-_][^\W\d_]+)*", core) or re.fullmatch(r"[a-z]+(?:_[a-z0-9]+)+", core):
+        return False
+    lower, upper = bool(re.search(r"[a-zа-яё]", tok)), bool(re.search(r"[A-ZА-ЯЁ]", tok))
+    digit, symbol = bool(re.search(r"\d", tok)), bool(re.search(r"[^\w\s-]", core))
+    if not (lower or upper) or not (digit or symbol):
+        return False
+    classes = lower + upper + digit + symbol
+    if standalone_message:
+        return classes >= 3 or (symbol and classes >= 2)
+    return symbol and classes >= 3
+
+
+def _password_findings(text: str) -> list[Finding]:
+    out: list[Finding] = []
+    for m in _PW_LABEL_LINE.finditer(text):
+        out.append(Finding("labeled_secret", *m.span(1)))
+    for m in _EMAIL_PAIR.finditer(text):
+        if _password_like(m.group(1), True) and not _NOT_PASSWORD.match(m.group(1)):
+            out.append(Finding("email_password", *m.span(1)))
+    lines = text.split("\n")
+    standalone = len([l for l in lines if l.strip()]) == 1
+    pos = 0
+    for line in lines:
+        tok = line.strip()
+        if tok and " " not in tok and "\t" not in tok and _password_like(tok, standalone):
+            start = pos + line.index(tok)
+            out.append(Finding("possible_password", start, start + len(tok)))
+        pos += len(line) + 1
+    return out
+
+
 def find(text: str) -> list[Finding]:
     """Найти креды в уже нормализованном тексте. Отрезки не пересекаются."""
     found: list[Finding] = []
@@ -127,6 +179,7 @@ def find(text: str) -> list[Finding]:
                 if not (16 <= len(digits) <= 19 and _luhn_ok(digits)):
                     continue
             found.append(Finding(kind, s, e))
+    found.extend(_password_findings(text))
     for m in _TOKEN_CANDIDATE.finditer(probe):
         if _looks_random(m.group(0)):
             found.append(Finding("random_token", m.start(), m.end()))
