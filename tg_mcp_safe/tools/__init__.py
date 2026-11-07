@@ -1,1 +1,1 @@
-from . import accounts, chats, contacts, events, folders, groups, media, messages, profile  # noqa: F401
+from . import accounts, channels, chats, contacts, events, folders, groups, media, messages, profile  # noqa: F401

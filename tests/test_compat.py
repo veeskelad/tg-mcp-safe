@@ -6,6 +6,9 @@ from pathlib import Path
 import tg_mcp_safe.tools  # noqa: F401
 from tg_mcp_safe.app import mcp
 
+# Свои инструменты сверх эталона chigwell; всё остальное должно совпасть с эталоном.
+EXTRA_TOOLS = {"send_post", "get_custom_emoji_set", "get_boosts_status", "set_chat_reactions"}
+
 REF = {t["name"]: t for t in json.loads((Path(__file__).parent / "fixtures" / "tools.json").read_text())}
 
 
@@ -24,7 +27,8 @@ def _ours():
 
 def test_same_names():
     ours = set(_ours())
-    assert ours == set(REF), {"missing": sorted(set(REF) - ours), "extra": sorted(ours - set(REF))}
+    assert ours - EXTRA_TOOLS == set(REF), {"missing": sorted(set(REF) - ours), "extra": sorted(ours - set(REF) - EXTRA_TOOLS)}
+    assert EXTRA_TOOLS <= ours
 
 
 def test_same_params():

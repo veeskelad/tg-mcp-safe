@@ -106,6 +106,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(levelname)s %(name)s: %(message)s")
     for noisy in ("telethon", "mcp", "uvicorn.access", "httpx"):
         logging.getLogger(noisy).setLevel(logging.WARNING)
+    # stateless HTTP: SDK пишет трассировку ClosedResourceError после каждого ответа, это не ошибка
+    logging.getLogger("mcp.server.streamable_http").setLevel(logging.CRITICAL)
     asyncio.run(_main(args))
 
 

@@ -11,6 +11,7 @@ dependencies = [
 
 [project.scripts]
 tg-mcp-safe = "tg_mcp_safe.runner:main"
+tg-mcp-call = "tg_mcp_safe.call:main"
 
 [dependency-groups]
 dev = ["pytest==8.4.2", "pytest-asyncio==1.2.0"]

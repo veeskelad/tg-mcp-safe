@@ -49,6 +49,8 @@ def entity(e: Any) -> dict | None:
         d["members"] = e.participants_count
     if getattr(e, "forum", False):
         d["forum"] = True
+    if getattr(e, "creator", False):
+        d["creator"] = True
     if e is not None and getattr(e, "id", None) in redact.SERVICE_SENDER_IDS:
         d["service"] = True
     return d
@@ -169,6 +171,11 @@ def message(msg: Any, *, with_sender: bool = True) -> dict | None:
         d["edited"] = msg.edit_date
     if getattr(msg, "views", None):
         d["views"] = msg.views
+    if getattr(msg, "forwards", None):
+        d["forwards"] = msg.forwards
+    links = [e.url for e in (getattr(msg, "entities", None) or []) if isinstance(e, types.MessageEntityTextUrl)]
+    if links:
+        d["links"] = sorted(set(links))[:20]
     if getattr(msg, "grouped_id", None):
         d["album_id"] = msg.grouped_id
     if getattr(msg, "pinned", False):

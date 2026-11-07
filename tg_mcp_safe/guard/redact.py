@@ -63,12 +63,13 @@ _PATTERNS: list[tuple[str, re.Pattern, int]] = [
         r"\s*(?:[:=]|—|–|-\s|is\s|это\s)\s*[\"'`]?([^\s\"'`]{3,})"), 1),
     # Коды входа и OTP: число рядом со словом «код».
     ("login_code", re.compile(
-        r"(?i)(?<![\w])(?:код\w*|code|otp|2fa|pin|пин|verification|подтверждени\w*|login|вход\w*)[^\d\n]{0,40}?\b(\d(?:[ -]?\d){3,7})\b"), 1),
+        r"(?i)(?<![\w])(?:код\w*|code|otp|2fa|pin|пин|verification|подтверждени\w*|login|вход\w*)[^\d\n]{0,40}?\b(\d(?:[ -]?\d){4,7})\b"), 1),
     ("login_code", re.compile(
-        r"(?i)\b(\d(?:[ -]?\d){3,7})\b[^\d\n]{0,25}?(?:—|-|–|:)?\s*(?:ваш|your|это|is)?\s*(?:код\w*|code|otp)"), 1),
+        r"(?i)\b(\d(?:[ -]?\d){4,7})\b[^\d\n]{0,25}?(?:—|-|–|:)?\s*(?:ваш|your|это|is)?\s*(?:код\w*|code|otp)"), 1),
     ("card_number", re.compile(r"\b(?:\d[ -]?){15,18}\d\b"), 0),
 ]
 
+_URL = re.compile(r"(?i)\b(?:https?://|www\.|t\.me/)\S+")
 _TOKEN_CANDIDATE = re.compile(r"[0-9A-Za-z_\-+/=.~]{24,}")
 # Префиксы, по которым ищем секрет, разбитый пробелами: «g l p a t - …»
 _SPLIT_PREFIXES = re.compile(r"(?i)(glpat-|ghp_|github_pat_|sk-ant-|sk-proj-|xox[abp]-|akia|aiza|hvs\.|eyj)")
@@ -125,7 +126,8 @@ _NOT_PASSWORD = re.compile(
 def _password_like(tok: str, standalone_message: bool) -> bool:
     if not 8 <= len(tok) <= 64 or _NOT_PASSWORD.match(tok):
         return False
-    core = tok.strip(" *`_~[](){}<>\"'«»“”:;.,!?…")
+    core = re.sub(r"^[^\x00-\x7f\w]+|[^\x00-\x7f\w]+$", "", tok)  # эмодзи и стрелки по краям: 👉Подписаться
+    core = core.strip(" *`_~[](){}<>\"'«»“”:;.,!?…")
     if not core or _NOT_PASSWORD.match(core):
         return False
     if not standalone_message:
@@ -136,7 +138,9 @@ def _password_like(tok: str, standalone_message: bool) -> bool:
     if re.fullmatch(r"[^\W\d_]+(?:[-_][^\W\d_]+)*", core) or re.fullmatch(r"[a-z]+(?:_[a-z0-9]+)+", core):
         return False
     lower, upper = bool(re.search(r"[a-zа-яё]", tok)), bool(re.search(r"[A-ZА-ЯЁ]", tok))
-    digit, symbol = bool(re.search(r"\d", tok)), bool(re.search(r"[^\w\s-]", core))
+    # точка между буквами и цифрами внутри длинного текста — версия или название модели (Qwen2.5-VL), не символ пароля
+    sym_core = core if standalone_message else re.sub(r"(?<=\w)\.(?=\w)", "", core)
+    digit, symbol = bool(re.search(r"\d", tok)), bool(re.search(r"[^\w\s-]", sym_core))
     if not (lower or upper) or not (digit or symbol):
         return False
     classes = lower + upper + digit + symbol
@@ -180,7 +184,10 @@ def find(text: str) -> list[Finding]:
                     continue
             found.append(Finding(kind, s, e))
     found.extend(_password_findings(text))
+    url_spans = [u.span() for u in _URL.finditer(probe)]
     for m in _TOKEN_CANDIDATE.finditer(probe):
+        if any(a <= m.start() < b for a, b in url_spans):
+            continue  # id видео и пути в ссылках; секреты в URL ловят url_secret и url_password
         if _looks_random(m.group(0)):
             found.append(Finding("random_token", m.start(), m.end()))
     found.sort(key=lambda f: (f.start, -(f.end - f.start)))

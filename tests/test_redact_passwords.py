@@ -33,6 +33,10 @@ def test_password_without_label_masked(text):
     "напиши на ivan@mail.ru завтра",
     "Смотри src/app.py",
     "2026-11-07",
+    "Модели:\nWan2.1-14B\nQwen2.5-VL\nFlux.1-dev\nи ещё строка",
+    "Новости\n👉Подписаться\n🔥Обсуждение",
+    "Видео https://www.youtube.com/watch?v=dQw4w9WgXcQ_Ab3dEf6hIj9kLm2n и ещё",
+    "Вышел Claude Code 2025 года",
 ])
 def test_normal_text_not_masked(text):
     assert redact.redact(text) == text, redact.redact(text)
