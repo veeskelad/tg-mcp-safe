@@ -4,6 +4,8 @@ A Telegram MCP server (Telethon, user account) built to keep credentials from le
 
 It is a drop-in replacement for [`chigwell/telegram-mcp`](https://github.com/chigwell/telegram-mcp): the same 116 tools with the same names and parameters (checked by `tests/test_compat.py`). The code is written from scratch; tool output is compact JSON.
 
+On top of that, 4 own tools for channel work: `send_post` (Telegram HTML with `<tg-emoji>` custom emoji, as text or as a file caption; `.webp` is sent as a photo), `get_custom_emoji_set`, `get_boosts_status`, `set_chat_reactions`.
+
 ## Threat model
 
 An agent with access to your Telegram can leak secrets in three ways:
@@ -67,6 +69,18 @@ The service runs as a dedicated `tgmcp` user with an empty home and only the all
 New session: `sudo deploy/rotate-session.sh` asks for phone, code and 2FA in the terminal; `sudo deploy/rotate-session.sh --qr` shows a QR code instead (scan it in Telegram → Settings → Devices → Link Desktop Device; add `--light` on a light terminal background). Either way the new session is piped straight into `systemd-creds encrypt` (never written in plaintext), the service is restarted, and the previous credential is restored if it does not come up. Then terminate the old session in Telegram → Settings → Devices.
 
 Claude Code: `claude mcp add --transport http telegram http://127.0.0.1:8767/mcp`.
+
+## Scripts
+
+Scripts that used to run their own Telethon client with a copy of the session call the server instead:
+
+```python
+from tg_mcp_safe.call import call, ToolError   # interpreter: /opt/tg-mcp-safe/venv/bin/python
+posts = call("list_messages", chat_id=-1001234567890, limit=50)["items"]
+call("send_post", chat_id="me", html="<b>hi</b>", file_path="/path/in/allowed/folder/image.webp")
+```
+
+From a shell: `tg-mcp-call get_me` or `tg-mcp-call list_messages '{"chat_id": "me", "limit": 5}'`. Errors come back as `ToolError(code, reason)`. The script never sees the session; all guards apply.
 
 ## Development
 
