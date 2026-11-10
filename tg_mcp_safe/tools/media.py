@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import io
+import logging
 import mimetypes
 import os
 from pathlib import Path
 from typing import Any
 
+from mcp.types import ImageContent, TextContent
 from telethon import functions, types
 
 from .. import app
-from ..app import client, tool
+from ..app import Rich, client, tool
 from ..guard import redact
+from ..guard.files import _TEXT_EXT
 from ..guard.errors import GuardError
 from ..guard.messages import check_outgoing, deny_if_sensitive, is_service_sender
 from ..serialize import media as media_info, resolve
@@ -126,6 +132,110 @@ async def download_media(chat_id: int | str, message_id: int, file_path: str | N
         raise GuardError("outside_download_dir", "файл оказался вне папки загрузок и удалён")
     mime = getattr(getattr(msg.media, "document", None), "mime_type", None) or mimetypes.guess_type(final.name)[0]
     return {"ok": True, "path": str(final), "size": final.stat().st_size, "mime": mime}
+
+
+# get_media_content: файл читается в память, на диск сервера не пишется.
+MAX_CONTENT_BYTES = 5 * 1024 * 1024
+MAX_BASE64_BYTES = 48 * 1024  # base64 модель переписывает в другой вызов: больше — дорого и ненадёжно
+MAX_TEXT_CHARS = 20000
+MAX_PDF_PAGES = 50
+_INLINE_IMAGES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+_TEXT_MIMES = {"application/json", "application/xml", "application/x-yaml", "application/yaml"}
+
+logging.getLogger("pypdf").setLevel(logging.ERROR)
+
+
+def _content_kind(mime: str, name: str) -> str:
+    if mime == "application/pdf" or name.lower().endswith(".pdf"):
+        return "pdf"
+    if mime.startswith("image/"):
+        return "image"
+    if mime.startswith("text/") or mime in _TEXT_MIMES or (Path(name).suffix.lower() in _TEXT_EXT and Path(name).suffix):
+        return "text"
+    return "other"
+
+
+def _pdf_text(data: bytes) -> tuple[str | None, int | None, str | None]:
+    from pypdf import PdfReader
+
+    try:
+        reader = PdfReader(io.BytesIO(data))
+        if reader.is_encrypted:
+            return None, None, "PDF зашифрован, текст не извлечь"
+        pages = reader.pages
+        parts = [(pg.extract_text() or "") for pg in list(pages)[:MAX_PDF_PAGES]]
+        return "\n".join(parts).strip(), len(pages), None
+    except Exception as exc:  # noqa: BLE001 — битый PDF не должен ронять ответ
+        return None, None, f"текст PDF не извлечь: {type(exc).__name__}"
+
+
+@tool(readonly=True, rich=True, fan_out=False)
+async def get_media_content(chat_id: int | str, message_id: int, mode: str = "auto", account: str = None) -> str:
+    """Read a message's file without saving it: images return as an image, PDF/text files as extracted text.
+    mode="base64" also returns the raw file (up to 48 KB) as base64 in the next block, e.g. for a Gmail attachment's content.
+    Returns JSON: file_name, mime, size, sha256, text, pages, base64."""
+    if mode not in ("auto", "base64"):
+        raise GuardError("bad_request", "mode: auto или base64")
+    cl = client(account)
+    _, msg = await _get_message(cl, chat_id, message_id)
+    deny_if_sensitive(msg, "get_media_content")
+    m = getattr(msg, "media", None)
+    if not m:
+        raise GuardError("no_media", "в сообщении нет медиа")
+    if not isinstance(m, (types.MessageMediaPhoto, types.MessageMediaDocument)):
+        raise GuardError("no_file", "в сообщении нет файла (ссылка, опрос, контакт или геоточка)")
+    doc = getattr(m, "document", None)
+    if getattr(doc, "size", 0) and doc.size > MAX_CONTENT_BYTES:
+        raise GuardError("too_large", "файл больше 5 МБ: используйте download_media")
+    data = await cl.download_media(msg, file=bytes)
+    if not data:
+        raise GuardError("download_failed", "Telegram не отдал файл")
+    if len(data) > MAX_CONTENT_BYTES:
+        raise GuardError("too_large", "файл больше 5 МБ: используйте download_media")
+
+    name = _media_name(msg) or f"msg_{message_id}{_media_ext(msg)}"
+    mime = getattr(doc, "mime_type", None) if doc is not None else "image/jpeg"
+    if not mime or mime == "application/octet-stream":
+        mime = mimetypes.guess_type(name)[0] or "application/octet-stream"
+    kind = _content_kind(mime, name)
+    meta: dict[str, Any] = {
+        "chat_id": chat_id, "message_id": message_id, "file_name": name, "mime": mime,
+        "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+    }
+    if mode == "base64":
+        if kind == "other":
+            raise GuardError("unsupported_type", "base64 отдаётся только для картинок, PDF и текстовых файлов")
+        if len(data) > MAX_BASE64_BYTES:
+            raise GuardError("too_large_for_base64", "base64 отдаётся для файлов до 48 КБ")
+    blocks: list = []
+    text: str | None = None
+    if kind == "pdf":
+        text, pages, note = _pdf_text(data)
+        meta["pages"] = pages
+        if note:
+            meta["note"] = note
+    elif kind == "text" and b"\x00" not in data[:8192]:
+        text = data.decode("utf-8", errors="replace")
+    if text is not None:
+        truncated = len(text) > MAX_TEXT_CHARS
+        if mode == "auto":
+            text = text[:MAX_TEXT_CHARS]  # маскировка квадратична на длинных словах: проверяем только то, что отдаём
+        meta["text"] = text[:MAX_TEXT_CHARS]  # finalize замаскирует креды
+        meta["text_truncated"] = truncated
+    findings = redact.detect(text) if text else []
+    if findings:
+        meta["secrets_masked"] = findings
+    if kind == "image" and mode == "auto" and mime in _INLINE_IMAGES:
+        blocks.append(ImageContent(type="image", data=base64.b64encode(data).decode(), mimeType=mime))
+
+    if mode == "base64":
+        if kind == "pdf" and text is None:
+            raise GuardError("unscannable", "PDF не проверить на креды (зашифрован или битый): base64 не отдаётся")
+        if findings:
+            raise GuardError("file_contains_secret", "в файле найдены креды: " + ", ".join(findings))
+        meta["base64"] = "следующий блок: содержимое файла в base64 целиком, без пробелов и переносов"
+        blocks.append(TextContent(type="text", text=base64.b64encode(data).decode()))
+    return Rich(meta, blocks, raw=data)
 
 
 @tool(destructive=True)

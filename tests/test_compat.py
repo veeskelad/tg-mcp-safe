@@ -7,7 +7,7 @@ import tg_mcp_safe.tools  # noqa: F401
 from tg_mcp_safe.app import mcp
 
 # Свои инструменты сверх эталона chigwell; всё остальное должно совпасть с эталоном.
-EXTRA_TOOLS = {"send_post", "get_custom_emoji_set", "get_boosts_status", "set_chat_reactions"}
+EXTRA_TOOLS = {"send_post", "get_custom_emoji_set", "get_boosts_status", "set_chat_reactions", "get_media_content"}
 
 REF = {t["name"]: t for t in json.loads((Path(__file__).parent / "fixtures" / "tools.json").read_text())}
 
