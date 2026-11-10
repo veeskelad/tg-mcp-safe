@@ -529,6 +529,15 @@ crypto = [
 ]
 
 [[package]]
+name = "pypdf"
+version = "5.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/43/4026f6ee056306d0e0eb04fcb9f2122a0f1a5c57ad9dc5e0d67399e47194/pypdf-5.4.0.tar.gz", hash = "sha256:9af476a9dc30fcb137659b0dec747ea94aa954933c52cf02ee33e39a16fe9175", size = 5012492, upload-time = "2025-03-16T09:44:11.656Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0b/27/d83f8f2a03ca5408dc2cc84b49c0bf3fbf059398a6a2ea7c10acfe28859f/pypdf-5.4.0-py3-none-any.whl", hash = "sha256:db994ab47cadc81057ea1591b90e5b543e2b7ef2d0e31ef41a9bfe763c119dab", size = 302306, upload-time = "2025-03-16T09:44:09.757Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
@@ -794,6 +803,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "mcp" },
+    { name = "pypdf" },
     { name = "python-socks" },
     { name = "qrcode" },
     { name = "telethon" },
@@ -808,6 +818,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "mcp", specifier = "==1.22.0" },
+    { name = "pypdf", specifier = "==5.4.0" },
     { name = "python-socks", extras = ["asyncio"], specifier = "==2.7.1" },
     { name = "qrcode", specifier = "==8.2" },
     { name = "telethon", specifier = "==1.44.0" },

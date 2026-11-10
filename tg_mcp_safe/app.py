@@ -17,7 +17,7 @@ from datetime import date, datetime
 from typing import Any, Callable
 
 from mcp.server.fastmcp import FastMCP
-from mcp.types import ToolAnnotations
+from mcp.types import ContentBlock, TextContent, ToolAnnotations
 from telethon import TelegramClient, errors as tg_errors
 
 from .guard import redact
@@ -89,6 +89,41 @@ def finalize(result: Any) -> str:
     return text
 
 
+class Rich:
+    """Ответ с бинарными блоками (картинка, base64 файла) рядом с JSON-метаданными.
+
+    Метаданные проходят обычный `finalize`. Блоки не маскируются (маска испортит
+    байты), поэтому инструмент обязан проверить содержимое до того, как вернуть Rich;
+    обёртка сверяет блоки только с секретами сервера.
+    """
+
+    def __init__(self, meta: dict, blocks: list[ContentBlock], raw: bytes = b""):
+        self.meta = meta
+        self.blocks = blocks
+        self.raw = raw
+
+
+def _blocks_leak(r: Rich) -> bool:
+    for s in _secrets:
+        if not s:
+            continue
+        if r.raw and s.encode() in r.raw:
+            return True
+        for b in r.blocks:
+            if isinstance(b, TextContent) and s in b.text:
+                return True
+    return False
+
+
+def finalize_rich(result: Any) -> list[ContentBlock]:
+    if not isinstance(result, Rich):
+        return [TextContent(type="text", text=finalize(result))]
+    if _blocks_leak(result):
+        log.error("canary: секрет сервера в файле, ответ заменён")
+        return [TextContent(type="text", text=finalize(error("blocked", "файл содержал секрет сервера и заблокирован")))]
+    return [TextContent(type="text", text=finalize(result.meta)), *result.blocks]
+
+
 def error(code: str, reason: str, **extra: Any) -> dict:
     return {"error": {"code": code, "reason": reason, **extra}}
 
@@ -121,8 +156,13 @@ def map_exception(name: str, exc: BaseException) -> dict:
 # ---------------------------------------------------------------- регистрация
 
 def tool(*, readonly: bool = False, destructive: bool = False, idempotent: bool | None = None,
-         title: str | None = None, open_world: bool = True, fan_out: bool = True) -> Callable:
-    """Регистрирует инструмент. Функция возвращает dict/list/str; строки маскируются."""
+         title: str | None = None, open_world: bool = True, fan_out: bool = True,
+         rich: bool = False) -> Callable:
+    """Регистрирует инструмент. Функция возвращает dict/list/str; строки маскируются.
+
+    rich=True: функция может вернуть `Rich` (JSON + блоки картинки/файла); инструмент
+    отвечает списком блоков MCP без структурированной схемы и без раздачи по аккаунтам.
+    """
 
     def deco(fn: Callable) -> Callable:
         sig = inspect.signature(fn)
@@ -135,9 +175,13 @@ def tool(*, readonly: bool = False, destructive: bool = False, idempotent: bool 
                 return map_exception(fn.__name__, exc)
 
         @functools.wraps(fn)
-        async def wrapper(*args: Any, **kwargs: Any) -> str:
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
             bound = sig.bind_partial(*args, **kwargs)
             account = bound.arguments.get("account") if has_account else None
+            if rich:
+                if has_account and account is None and len(clients) > 1:
+                    return finalize_rich(error("account_required", "укажите account: " + ", ".join(clients)))
+                return finalize_rich(await run_one(args, kwargs))
             if has_account and account is None and len(clients) > 1:
                 if readonly and fan_out:
                     labels = list(clients)
@@ -154,7 +198,8 @@ def tool(*, readonly: bool = False, destructive: bool = False, idempotent: bool 
             openWorldHint=open_world,
         )
         doc = inspect.getdoc(fn) or ""
-        mcp.tool(name=fn.__name__, description=doc, annotations=ann)(wrapper)
+        mcp.tool(name=fn.__name__, description=doc, annotations=ann,
+                 structured_output=False if rich else None)(wrapper)
         if readonly:
             READONLY_TOOLS.add(fn.__name__)
         return wrapper
