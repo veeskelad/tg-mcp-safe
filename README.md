@@ -2,12 +2,6 @@
 
 A Telegram MCP server (Telethon, user account) built to keep credentials from leaking to the AI agent that uses it.
 
-It is a drop-in replacement for [`chigwell/telegram-mcp`](https://github.com/chigwell/telegram-mcp): the same 116 tools with the same names and parameters (checked by `tests/test_compat.py`). The code is written from scratch; tool output is compact JSON.
-
-On top of that, 5 own tools. For channel work: `send_post` (Telegram HTML with `<tg-emoji>` custom emoji, as text or as a file caption; `.webp` is sent as a photo), `get_custom_emoji_set`, `get_boosts_status`, `set_chat_reactions`.
-
-`get_media_content` reads a message's file into memory without saving it, for remote clients (claude.ai) that cannot reach the server's download folder: images come back as an image block, PDF and text files as extracted text (masked like messages). `mode="base64"` adds the raw file (up to 48 KB, images/PDF/text only, refused if the text contains credentials) as a second block, e.g. to pass as a Gmail attachment's `content`. Files over 5 MB go through `download_media`.
-
 ## Threat model
 
 An agent with access to your Telegram can leak secrets in three ways:
