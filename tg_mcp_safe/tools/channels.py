@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import asyncio
 import tempfile
+from datetime import datetime
 from pathlib import Path
 
 from telethon import functions, types
@@ -15,6 +16,7 @@ from .. import app
 from ..app import client, tool
 from ..guard.errors import GuardError
 from ..guard.messages import check_outgoing
+from .. import serialize
 from ..serialize import resolve
 
 FFMPEG = "/usr/bin/ffmpeg"
@@ -156,3 +158,146 @@ async def set_chat_reactions(chat_id: int | str, custom_emoji_ids: list[str] = N
     await cl(functions.messages.SetChatAvailableReactionsRequest(peer=ent, available_reactions=avail))
     return {"ok": True, "chat_id": chat_id, "count": count, "mode": "all" if allow_all else ("some" if count else "none")}
 
+
+
+
+# ---------------------------------------------------------------- управление каналом
+
+def _channel(e):
+    if not isinstance(e, types.Channel):
+        raise GuardError("bad_request", "это не канал и не супергруппа")
+    return e
+
+
+def _ts(d):
+    return d.isoformat() if d else None
+
+
+def _invite(i) -> dict:
+    return {"link": getattr(i, "link", None), "title": getattr(i, "title", None),
+            "expire_date": _ts(getattr(i, "expire_date", None)), "usage_limit": getattr(i, "usage_limit", None),
+            "usage": getattr(i, "usage", None), "requested": getattr(i, "requested", None),
+            "request_needed": bool(getattr(i, "request_needed", False)),
+            "revoked": bool(getattr(i, "revoked", False)), "permanent": bool(getattr(i, "permanent", False))}
+
+
+@tool(idempotent=True)
+async def toggle_signatures(chat_id: int | str, enabled: bool, account: str = None) -> dict:
+    """Show or hide author signatures on channel posts."""
+    cl = client(account)
+    e = _channel(await resolve(cl, chat_id))
+    await cl(functions.channels.ToggleSignaturesRequest(channel=e, signatures_enabled=enabled))
+    return {"ok": True, "chat_id": chat_id, "signatures": enabled}
+
+
+@tool(idempotent=True)
+async def toggle_content_protection(chat_id: int | str, enabled: bool, account: str = None) -> dict:
+    """Forbid (enabled=true) or allow forwarding and saving posts of a channel or group."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    await cl(functions.messages.ToggleNoForwardsRequest(peer=e, enabled=enabled))
+    return {"ok": True, "chat_id": chat_id, "content_protection": enabled}
+
+
+@tool(idempotent=True)
+async def set_discussion_group(chat_id: int | str, group_id: int | str = None, account: str = None) -> dict:
+    """Link a supergroup as the channel's comments; group_id empty unlinks comments."""
+    cl = client(account)
+    ch = _channel(await resolve(cl, chat_id))
+    grp = _channel(await resolve(cl, group_id)) if group_id else types.InputChannelEmpty()
+    await cl(functions.channels.SetDiscussionGroupRequest(broadcast=ch, group=grp))
+    return {"ok": True, "chat_id": chat_id, "group_id": group_id}
+
+
+@tool()
+async def create_invite_link(chat_id: int | str, title: str = None, expire_date: str = None,
+                             usage_limit: int = None, request_needed: bool = False, account: str = None) -> dict:
+    """Create an extra invite link: title, expiry (ISO-8601), member limit, join by request."""
+    if title:
+        check_outgoing(title, field="название ссылки")
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    exp = datetime.fromisoformat(expire_date) if expire_date else None
+    res = await cl(functions.messages.ExportChatInviteRequest(
+        peer=e, title=title, expire_date=exp, usage_limit=None if request_needed else usage_limit,
+        request_needed=request_needed or None))
+    return {"chat_id": chat_id, **_invite(res)}
+
+
+@tool(readonly=True)
+async def list_invite_links(chat_id: int | str, revoked: bool = False, limit: int = 50, account: str = None) -> dict:
+    """List my invite links of a channel or group with usage counters."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    res = await cl(functions.messages.GetExportedChatInvitesRequest(
+        peer=e, admin_id=types.InputUserSelf(), limit=min(limit, 100), revoked=revoked or None))
+    return {"chat_id": chat_id, "items": [_invite(i) for i in res.invites]}
+
+
+@tool(destructive=True, idempotent=True)
+async def revoke_invite_link(chat_id: int | str, link: str, account: str = None) -> dict:
+    """Revoke an invite link: it stops working, members who joined stay."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    res = await cl(functions.messages.EditExportedChatInviteRequest(peer=e, link=link, revoked=True))
+    return {"ok": True, "chat_id": chat_id, **_invite(getattr(res, "invite", None))}
+
+
+@tool(readonly=True)
+async def list_join_requests(chat_id: int | str, link: str = None, limit: int = 50, account: str = None) -> dict:
+    """Pending join requests of a channel or group (optionally for one invite link)."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    res = await cl(functions.messages.GetChatInviteImportersRequest(
+        peer=e, offset_date=None, offset_user=types.InputUserEmpty(), limit=min(limit, 100),
+        requested=True, link=link))
+    users = {u.id: u for u in res.users}
+    return {"chat_id": chat_id, "count": res.count,
+            "items": [{"user": serialize.entity(users.get(i.user_id)), "date": _ts(i.date), "about": i.about}
+                      for i in res.importers]}
+
+
+@tool()
+async def answer_join_request(chat_id: int | str, user_id: int | str, approve: bool, account: str = None) -> dict:
+    """Approve or decline one pending join request."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    u = await resolve(cl, user_id)
+    await cl(functions.messages.HideChatJoinRequestRequest(peer=e, user_id=u, approved=approve))
+    return {"ok": True, "chat_id": chat_id, "user_id": user_id, "approved": approve}
+
+
+@tool(readonly=True)
+async def get_message_views(chat_id: int | str, message_ids: list[int], account: str = None) -> dict:
+    """Views and forwards of channel posts by id."""
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    res = await cl(functions.messages.GetMessagesViewsRequest(peer=e, id=list(message_ids)[:100], increment=False))
+    return {"chat_id": chat_id, "items": [{"id": mid, "views": v.views, "forwards": v.forwards}
+                                          for mid, v in zip(message_ids, res.views)]}
+
+
+@tool(readonly=True)
+async def get_channel_stats(chat_id: int | str, account: str = None) -> dict:
+    """Channel statistics summary (Telegram gives it to channels with enough subscribers)."""
+    cl = client(account)
+    e = _channel(await resolve(cl, chat_id))
+    s = await cl(functions.stats.GetBroadcastStatsRequest(channel=e))
+
+    def abs_(v):
+        return {"current": getattr(v, "current", None), "previous": getattr(v, "previous", None)}
+    return {"chat_id": chat_id, "followers": abs_(s.followers), "views_per_post": abs_(s.views_per_post),
+            "shares_per_post": abs_(s.shares_per_post), "reactions_per_post": abs_(s.reactions_per_post),
+            "enabled_notifications": {"part": s.enabled_notifications.part, "total": s.enabled_notifications.total},
+            "period": {"min": _ts(s.period.min_date), "max": _ts(s.period.max_date)}}
+
+
+@tool(destructive=True)
+async def delete_channel(chat_id: int | str, confirm_title: str, account: str = None) -> dict:
+    """Delete a channel or supergroup for everyone. confirm_title must equal its current title."""
+    cl = client(account)
+    e = _channel(await resolve(cl, chat_id))
+    if confirm_title != e.title:
+        raise GuardError("bad_request", "confirm_title не совпадает с названием канала, удаление не выполнено")
+    await cl(functions.channels.DeleteChannelRequest(channel=e))
+    return {"ok": True, "chat_id": chat_id, "deleted": e.title}
