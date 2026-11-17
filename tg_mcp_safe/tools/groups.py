@@ -161,6 +161,19 @@ async def edit_chat_title(chat_id: int | str, title: str, account: str = None) -
 
 
 @tool(idempotent=True)
+async def set_chat_username(chat_id: int | str, username: str, account: str = None) -> dict:
+    """Set the public @username of a channel or supergroup ("" makes it private again)."""
+    username = username.lstrip("@")
+    check_outgoing(username, field="ник чата")
+    cl = client(account)
+    e = await resolve(cl, chat_id)
+    if not isinstance(e, types.Channel):
+        raise GuardError("bad_request", "ник ставится только каналу или супергруппе")
+    await cl(functions.channels.UpdateUsernameRequest(channel=e, username=username))
+    return {"ok": True, "chat_id": chat_id, "username": username}
+
+
+@tool(idempotent=True)
 async def edit_chat_about(chat_id: int | str, about: str, account: str = None) -> dict:
     """Set the description of a group or channel (Telegram limit 255 chars)."""
     check_outgoing(about, field="описание чата")
