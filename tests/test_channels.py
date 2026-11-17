@@ -152,3 +152,26 @@ def test_call_parse_result():
     with pytest.raises(ToolError) as e:
         parse_result("t", '{"error":{"code":"outside_roots","reason":"нет"}}')
     assert e.value.code == "outside_roots"
+
+
+def test_delete_channel_needs_exact_title(fc):
+    c, _ = fc
+    r = run(channels.delete_channel(chat_id=-1005, confirm_title="Ninjiu"))
+    assert r["error"]["code"] == "bad_request" and not [x for x in c.calls if x[0] == "DeleteChannelRequest"]
+    r = run(channels.delete_channel(chat_id=-1005, confirm_title="ninjiu"))
+    assert r["ok"] and c.calls[-1][0] == "DeleteChannelRequest"
+
+
+def test_invite_link_title_secret_blocked(fc):
+    c, _ = fc
+    r = run(channels.create_invite_link(chat_id=-1005, title="ключ " + SECRET))
+    assert r["error"]["code"] == "outgoing_secret" and SECRET not in json.dumps(r) and c.calls == []
+
+
+def test_channel_toggles(fc):
+    c, _ = fc
+    assert run(channels.toggle_signatures(chat_id=-1005, enabled=True))["ok"]
+    assert run(channels.toggle_content_protection(chat_id=-1005, enabled=True))["ok"]
+    assert run(channels.set_discussion_group(chat_id=-1005))["ok"]
+    assert [x[0] for x in c.calls] == ["ToggleSignaturesRequest", "ToggleNoForwardsRequest", "SetDiscussionGroupRequest"]
+    assert c.calls[1][1].enabled is True
