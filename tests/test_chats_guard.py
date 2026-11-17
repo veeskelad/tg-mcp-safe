@@ -108,6 +108,7 @@ def test_edit_chat_about_secret_blocked(fake):
 
 @pytest.mark.parametrize("call", [
     lambda: groups.edit_chat_title(-1001, SECRET),
+    lambda: groups.set_chat_username(-1001, SECRET),
     lambda: groups.create_group(SECRET, [1]),
     lambda: groups.create_channel("ok", about=SECRET),
     lambda: chats.create_forum_topic(-1001, SECRET),
