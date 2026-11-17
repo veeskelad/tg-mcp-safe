@@ -145,9 +145,34 @@ _TEXT_MIMES = {"application/json", "application/xml", "application/x-yaml", "app
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
+# ponytail: только текст из XML внутри zip; таблицы плоско, формулы и картинки не читаем
+_OFFICE = {".docx": ("word/document.xml",), ".pptx": ("ppt/slides/slide",), ".xlsx": ("xl/sharedStrings.xml",)}
+
+
+def _office_text(data: bytes, name: str) -> tuple[str | None, str | None]:
+    import re
+    import zipfile
+    prefixes = _OFFICE[Path(name).suffix.lower()]
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            parts = sorted((n for n in z.namelist() if n.startswith(prefixes) and n.endswith(".xml")),
+                           key=lambda n: [int(x) if x.isdigit() else x for x in re.split(r"(\d+)", n)])
+            out = []
+            for n in parts:
+                xml = z.read(n).decode("utf-8", errors="replace")
+                xml = re.sub(r"</(w:p|a:p|si)>", "\n", xml)
+                out.append(re.sub(r"<[^>]+>", "", xml))
+        import html as _html
+        return _html.unescape("\n".join(out)).strip(), None
+    except Exception as exc:  # noqa: BLE001 — битый файл не должен ронять ответ
+        return None, f"текст документа не извлечь: {type(exc).__name__}"
+
+
 def _content_kind(mime: str, name: str) -> str:
     if mime == "application/pdf" or name.lower().endswith(".pdf"):
         return "pdf"
+    if Path(name).suffix.lower() in _OFFICE:
+        return "office"
     if mime.startswith("image/"):
         return "image"
     if mime.startswith("text/") or mime in _TEXT_MIMES or (Path(name).suffix.lower() in _TEXT_EXT and Path(name).suffix):
@@ -212,6 +237,10 @@ async def get_media_content(chat_id: int | str, message_id: int, mode: str = "au
     if kind == "pdf":
         text, pages, note = _pdf_text(data)
         meta["pages"] = pages
+        if note:
+            meta["note"] = note
+    elif kind == "office":
+        text, note = _office_text(data, name)
         if note:
             meta["note"] = note
     elif kind == "text" and b"\x00" not in data[:8192]:

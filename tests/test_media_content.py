@@ -165,3 +165,22 @@ def test_registered_unstructured_readonly():
     t = next(x for x in asyncio.run(app.mcp.list_tools()) if x.name == "get_media_content")
     assert t.outputSchema is None and t.annotations.readOnlyHint is True
     assert set(t.inputSchema["properties"]) == {"chat_id", "message_id", "mode", "account"}
+
+
+def test_office_text_docx_pptx_xlsx():
+    import io
+    import zipfile
+    from tg_mcp_safe.tools.media import _content_kind, _office_text
+
+    def mk(files):
+        b = io.BytesIO()
+        with zipfile.ZipFile(b, "w") as z:
+            for n, c in files.items():
+                z.writestr(n, c)
+        return b.getvalue()
+    d = mk({"word/document.xml": "<w:p><w:t>Привет &amp; мир</w:t></w:p><w:p><w:t>2</w:t></w:p>"})
+    assert _office_text(d, "a.docx") == ("Привет & мир\n2", None)
+    p = mk({"ppt/slides/slide10.xml": "<a:p><a:t>десять</a:t></a:p>", "ppt/slides/slide2.xml": "<a:p><a:t>два</a:t></a:p>"})
+    assert _office_text(p, "a.pptx")[0].split() == ["два", "десять"]
+    assert _content_kind("application/octet-stream", "Отчёт.XLSX") == "office"
+    assert _office_text(b"notzip", "a.docx")[0] is None
