@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import logging
 import os
+import re
 import sys
 
 from telethon import TelegramClient
@@ -68,7 +69,10 @@ async def _warm(label: str, cl: TelegramClient) -> None:
 
 async def _main(args: argparse.Namespace) -> None:
     cfg = load()
-    app.configure(cfg.secrets, FileGuard(args.roots, args.download_dir))
+    recipients = [int(x) for x in re.split(r"[\s,]+", args.secret_recipients or "") if x]
+    app.configure(cfg.secrets, FileGuard(args.roots, args.download_dir, args.secret_outbox or None, recipients))
+    if args.secret_outbox and recipients:
+        log.info("файлы с кредами: папка %s, адресатов %d", args.secret_outbox, len(recipients))
     built = build_clients(cfg)
     ok = await asyncio.gather(*(_connect(l, c) for l, c in built.items()))
     app.clients.clear()
@@ -99,6 +103,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="tg-mcp-safe")
     ap.add_argument("roots", nargs="*", help="папки, из которых можно отправлять файлы")
     ap.add_argument("--download-dir", default=os.environ.get("TG_MCP_DOWNLOAD_DIR"))
+    ap.add_argument("--secret-outbox", default=os.environ.get("TG_MCP_SECRET_OUTBOX"),
+                    help="папка внутри разрешённых, из которой файлы с кредами можно слать адресатам из списка")
+    ap.add_argument("--secret-recipients", default=os.environ.get("TG_MCP_SECRET_RECIPIENTS", ""),
+                    help="id людей в Telegram через запятую: им в личку можно слать файлы из --secret-outbox")
     ap.add_argument("--transport", default=os.environ.get("MCP_TRANSPORT", "stdio"), choices=["stdio", "http"])
     ap.add_argument("--host", default=os.environ.get("MCP_HOST", "127.0.0.1"))
     ap.add_argument("--port", type=int, default=int(os.environ.get("MCP_PORT", "8767")))

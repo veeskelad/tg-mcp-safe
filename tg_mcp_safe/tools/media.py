@@ -22,6 +22,16 @@ from ..guard.errors import GuardError
 from ..guard.messages import check_outgoing, deny_if_sensitive, is_service_sender
 from ..serialize import media as media_info, resolve
 
+log = logging.getLogger(__name__)
+
+
+def _private_user_id(ent: Any) -> int | None:
+    """id человека для лички; группы, каналы и боты не подходят."""
+    if isinstance(ent, types.User) and not getattr(ent, "bot", False):
+        return ent.id
+    return None
+
+
 # Документы GIF из последнего поиска: send_gif берёт отсюда access_hash.
 _gif_cache: dict[int, Any] = {}
 _GIF_CACHE_MAX = 500
@@ -86,10 +96,24 @@ async def send_file(chat_id: int | str, file_path: str | list[str], caption: str
     if isinstance(file_path, list):
         return await _send_paths(chat_id, file_path, caption, account)
     check_outgoing(caption, field="подпись")
-    path = app.files.resolve_upload(file_path)
-    cl = client(account)
-    ent = await resolve(cl, chat_id)
+    peer = None
+    try:
+        path = app.files.resolve_upload(file_path)
+    except GuardError as e:
+        # Файл с кредами пропускается только из папки секретов и только в личку человеку из списка;
+        # адресата узнаём лишь в этом случае, иначе отказ без обращения к Telegram.
+        if e.code != "file_contains_secret" or not app.files.in_secret_outbox(file_path):
+            raise
+        cl = client(account)
+        ent = await resolve(cl, chat_id)
+        peer = _private_user_id(ent)
+        path = app.files.resolve_upload(file_path, secret_peer=peer)
+    else:
+        cl = client(account)
+        ent = await resolve(cl, chat_id)
     sent = await cl.send_file(ent, str(path), caption=caption)
+    if app.files.secret_allowed(path, peer):
+        log.info("файл из папки секретов отправлен: адресат %s, файл %s, %d байт", peer, path.name, path.stat().st_size)
     return {"ok": True, "chat_id": chat_id, "file": path.name, **_ids(sent)}
 
 

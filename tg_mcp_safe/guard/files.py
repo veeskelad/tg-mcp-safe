@@ -2,6 +2,10 @@
 
 Разрешённые папки задаёт только сервер (аргументы запуска). Папки клиента MCP
 (roots) не используются никогда.
+
+Исключение для файлов с кредами (kubeconfig, конфиг доступа): такой файл уходит, только если
+он лежит в папке secret_outbox и адресат входит в secret_recipients. Оба значения задаёт
+сервер (site.conf), не клиент. Остальные проверки (папки, имена, размер) действуют.
 """
 
 from __future__ import annotations
@@ -32,9 +36,24 @@ _TEXT_EXT = {
 
 
 class FileGuard:
-    def __init__(self, roots: list[str], download_dir: str | None):
+    def __init__(self, roots: list[str], download_dir: str | None,
+                 secret_outbox: str | None = None, secret_recipients: "list[int] | tuple[int, ...]" = ()):
         self.roots = [Path(r).expanduser().resolve(strict=True) for r in roots if r]
         self.download_dir = Path(download_dir).expanduser().resolve() if download_dir else None
+        self.secret_outbox = Path(secret_outbox).expanduser().resolve() if secret_outbox else None
+        self.secret_recipients = frozenset(int(x) for x in secret_recipients)
+
+    def in_secret_outbox(self, file_path: str) -> bool:
+        if self.secret_outbox is None or not self.secret_recipients or not isinstance(file_path, str):
+            return False
+        real = Path(os.path.realpath(Path(file_path).expanduser()))
+        return real != self.secret_outbox and self.secret_outbox in real.parents
+
+    def secret_allowed(self, real: Path, peer_id: int | None) -> bool:
+        """Файл из папки секретов адресату из списка: проверку содержимого пропускаем."""
+        return (self.secret_outbox is not None and peer_id is not None
+                and int(peer_id) in self.secret_recipients
+                and real != self.secret_outbox and self.secret_outbox in real.parents)
 
     def _within(self, p: Path, root: Path) -> bool:
         return p == root or root in p.parents
@@ -49,7 +68,7 @@ class FileGuard:
             if fnmatch.fnmatch(name, pat):
                 raise GuardError("file_denied", "имя файла похоже на файл с секретами")
 
-    def resolve_upload(self, file_path: str) -> Path:
+    def resolve_upload(self, file_path: str, secret_peer: int | None = None) -> Path:
         if not self.roots:
             raise GuardError("file_tools_disabled", "отправка файлов выключена: нет разрешённых папок")
         if not isinstance(file_path, str) or not file_path.strip():
@@ -72,7 +91,8 @@ class FileGuard:
             size = real.stat().st_size
             if size > MAX_UPLOAD_BYTES:
                 raise GuardError("too_large", "файл больше 2 ГБ")
-            self._scan_content(real)
+            if not self.secret_allowed(real, secret_peer):
+                self._scan_content(real)
             return real
         raise GuardError("outside_roots", "файл вне разрешённых папок: " + ", ".join(str(r) for r in self.roots))
 
