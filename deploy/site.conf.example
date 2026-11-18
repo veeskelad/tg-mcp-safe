@@ -5,5 +5,9 @@ ROOTS=(/home/alice/Media /home/alice/Shared/outgoing)
 DOWNLOAD_DIR=/home/alice/Media/telegram-downloads
 # Group that can read downloaded files (usually your user's group).
 DOWNLOAD_GROUP=alice
+# Optional: a folder inside ROOTS for files with credentials (kubeconfig, access configs).
+# Such files go only to private chats with the Telegram user ids below; everything else stays blocked.
+SECRET_OUTBOX=/home/alice/Media/secret-outbox
+SECRET_RECIPIENTS="11111111,22222222"
 # Path to uv.
 UV=/usr/local/bin/uv
