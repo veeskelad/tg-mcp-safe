@@ -80,12 +80,11 @@ async def test_send_outside_roots(env):
     assert fake.calls == []
 
 
-async def test_send_file_with_secret(env):
+async def test_send_file_content_not_scanned(env):
     fake, root, _ = env
-    res = await media.send_file(chat_id=1, file_path=str(root / "leak.txt"))
-    assert _err(res) == "file_contains_secret"
-    assert fake.calls == []
-    assert "glpat" not in res
+    res = json.loads(await media.send_file(chat_id=1, file_path=str(root / "leak.txt")))
+    assert res["ok"]
+    assert [c for c in fake.calls if c[0] == "send_file"]
 
 
 async def test_send_ok(env):

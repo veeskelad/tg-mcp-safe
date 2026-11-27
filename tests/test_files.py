@@ -21,6 +21,7 @@ def test_ok(env):
     g, root, _ = env
     assert g.resolve_upload(str(root / "ok.jpg")).name == "ok.jpg"
     assert g.resolve_upload("notes.txt").name == "notes.txt"
+    assert g.resolve_upload("leak.txt").name == "leak.txt"  # содержимое не проверяется
 
 @pytest.mark.parametrize("p,code", [
     ("../secret.env", "outside_roots"),
@@ -28,7 +29,6 @@ def test_ok(env):
     (".env", "file_denied"),
     (".hidden/a.jpg", "file_denied"),
     ("id_rsa", "file_denied"),
-    ("leak.txt", "file_contains_secret"),
     ("/etc/passwd", "outside_roots"),
     (os.path.expanduser("~/.claude/.env"), "outside_roots"),
 ])

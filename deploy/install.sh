@@ -26,11 +26,6 @@ for r in "${ROOTS[@]}"; do
   find "$r" -type d -exec setfacl -m d:u:tgmcp:rX {} +
 done
 install -d -m 2770 -o tgmcp -g "$DOWNLOAD_GROUP" "$DL"
-if [[ -n "${SECRET_OUTBOX:-}" ]]; then
-  # Папка секретов: пишет владелец, tgmcp только читает; файлы класть с правами 640.
-  install -d -m 2750 -o "$DOWNLOAD_GROUP" -g "$DOWNLOAD_GROUP" "$SECRET_OUTBOX"
-  setfacl -m u:tgmcp:rX,d:u:tgmcp:r "$SECRET_OUTBOX"
-fi
 
 install -d -m 0700 -o root -g root /etc/tg-mcp-safe
 CRED=/etc/tg-mcp-safe/telegram.env.cred
@@ -43,7 +38,7 @@ if [[ "${1:-}" == "--move-credentials" ]]; then
 fi
 [[ -f "$CRED" ]] || { echo "нет $CRED: запустите с --move-credentials <telegram.env>"; exit 1; }
 
-sed -e "s#@ROOTS@#${ROOTS[*]}#g" -e "s#@DOWNLOAD_DIR@#$DL#g" -e "s#@SECRET_OUTBOX@#${SECRET_OUTBOX:-}#g" -e "s#@SECRET_RECIPIENTS@#${SECRET_RECIPIENTS:-}#g" "$SRC_DIR/deploy/tg-mcp-safe.service.in" > /etc/systemd/system/tg-mcp-safe.service
+sed -e "s#@ROOTS@#${ROOTS[*]}#g" -e "s#@DOWNLOAD_DIR@#$DL#g" "$SRC_DIR/deploy/tg-mcp-safe.service.in" > /etc/systemd/system/tg-mcp-safe.service
 chmod 0644 /etc/systemd/system/tg-mcp-safe.service
 systemctl daemon-reload
 echo "готово: systemctl start tg-mcp-safe"

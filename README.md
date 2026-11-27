@@ -18,7 +18,7 @@ An agent with access to your Telegram can leak secrets in three ways:
 | Messages from Telegram itself (777000, 42777) | Text is replaced with a mask. Forward, button press, download and message link are refused. |
 | Credentials inside any message | Login codes, passwords (`password: …`), bot tokens, cloud/API keys, JWT, PEM keys, passwords in URLs, secret query parameters, card numbers (Luhn), long random strings, and unlabeled passwords (a label like "Password:" on the line above, an email followed by a password, or a line that is a single password-like word) are masked as `‹скрыто: <kind> len:N›`. Text is normalized first (NFKC, invisible characters, Cyrillic homoglyphs, secrets split by spaces). The same messages cannot be forwarded or downloaded. |
 | Outgoing text | Messages, edits, drafts, captions, polls, profile, chat descriptions and bot commands containing credentials are refused. |
-| Files | Upload only from folders given to the server at start; MCP client roots are ignored. Hidden files, symlinks leaving the folder, and names like `.env`, `*.pem`, `id_*`, `*secret*`, `*.tfvars` are refused; text files containing credentials are refused. Downloads go to one folder, without overwriting. |
+| Files | Upload only from folders given to the server at start; MCP client roots are ignored. Hidden files, symlinks leaving the folder, and names like `.env`, `*.pem`, `id_*`, `*secret*`, `*.tfvars` are refused File contents are not scanned. Downloads go to one folder, without overwriting. |
 | Errors and logs | No raw exceptions: a code and a short reason. Message text is never logged. |
 | Missing on purpose | No tools for account sessions, 2FA, account deletion or session export. |
 
